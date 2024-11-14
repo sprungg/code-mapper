@@ -15,7 +15,7 @@ export class ASTAnalyzer {
     try {
       const content = await fs.promises.readFile(filePath, 'utf-8');
       const ast = parse(content, {
-        sourceType: 'unambiguous',
+        sourceType: "unambiguous",
         plugins: this.determinePlugins(filePath) as ParserOptions['plugins'],
       });
 

@@ -16,9 +16,6 @@ export class FileAnalyzer {
   }
 
   async analyze(includeRoot: boolean = false): Promise<ProjectGraph> {
-    console.log('Include patterns:', this.config.include);
-    console.log('Ignore patterns:', this.config.ignore);
-
     const files = await glob(this.config.include, {
       cwd: this.rootPath,
       ignore: this.config.ignore,

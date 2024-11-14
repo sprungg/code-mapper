@@ -45,6 +45,64 @@ async function analyzeProject() {
 analyzeProject();
 ```
 
+## Output Example
+
+When you run `sprungg-code-mapper`, it generates a structured output of your project. Here's an example of what the output might look like:
+
+```
+=== Project Structure Analysis ===
+
+📁 Files and Folders:
+📂 src
+📄 src/index.ts
+📂 src/analyzers
+📄 src/analyzers/fileAnalyzer.ts
+📄 src/analyzers/astAnalyzer.ts
+
+🔗 Dependencies:
+src/index.ts → src/analyzers/fileAnalyzer.ts
+src/index.ts → src/analyzers/astAnalyzer.ts
+
+📊 Statistics:
+Total Files: 3
+Total Folders: 2
+Total Import Dependencies: 2
+```
+
+## ProjectGraph JSON Format Example
+
+The `projectGraph` object returned by the API is structured as follows:
+
+```json
+{
+  "nodes": [
+    {
+      "id": "src/index.ts",
+      "type": "FILE",
+      "name": "index.ts",
+      "path": "src/index.ts",
+      "metadata": {
+        "extension": ".ts"
+      }
+    },
+    {
+      "id": "src/analyzers",
+      "type": "FOLDER",
+      "name": "analyzers",
+      "path": "src/analyzers"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel-1",
+      "type": "IMPORTS",
+      "sourceId": "src/index.ts",
+      "targetId": "src/analyzers/fileAnalyzer.ts"
+    }
+  ]
+}
+```
+
 ## Configuration
 
 The tool can be configured using a `tsconfig.json` file in your project root. It respects the `include` and `exclude` options to determine which files to analyze.

@@ -34,7 +34,7 @@ export function loadConfig(rootPath: string): AnalyzerConfig {
 
         // Add includes from tsconfig
         if (tsconfig.include) {
-          config.parsable = tsconfig.include;
+          config.include.push(...tsconfig.include);
         }
 
         // Add excludes from tsconfig
