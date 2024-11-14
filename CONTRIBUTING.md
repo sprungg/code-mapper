@@ -1,12 +1,12 @@
-# Contributing to sprungg-code-mapper
+# Contributing to @sprungg/code-mapper
 
-First off, thank you for considering contributing to sprungg-code-mapper! It's people like you that make it such a great tool.
+First off, thank you for considering contributing to @sprungg/code-mapper! It's people like you that make it such a great tool.
 
 ## How Can I Contribute?
 
 ### Reporting Bugs
 
-If you find a bug, please report it by opening an issue on [GitHub](https://github.com/sprungg/sprungg-code-mapper/issues). Please include:
+If you find a bug, please report it by opening an issue on [GitHub](https://github.com/sprungg/code-mapper/issues). Please include:
 
 - A clear and descriptive title.
 - A detailed description of the problem.
@@ -15,7 +15,7 @@ If you find a bug, please report it by opening an issue on [GitHub](https://gith
 
 ### Suggesting Features
 
-We welcome feature suggestions! To suggest a new feature, please open an issue on [GitHub](https://github.com/sprungg/sprungg-code-mapper/issues) and include:
+We welcome feature suggestions! To suggest a new feature, please open an issue on [GitHub](https://github.com/sprungg/code-mapper/issues) and include:
 
 - A clear and descriptive title.
 - A detailed description of the feature.
@@ -28,7 +28,7 @@ We welcome feature suggestions! To suggest a new feature, please open an issue o
 2. **Clone Your Fork**: Clone your fork to your local machine.
 
    ```bash
-   git clone https://github.com/sprungg/sprungg-code-mapper.git
+   git clone https://github.com/sprungg/code-mapper.git
    ```
 
 3. **Create a Branch**: Create a new branch for your changes.
@@ -66,4 +66,4 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## Thank You!
 
-Thank you for your interest in contributing to sprungg-code-mapper! We appreciate your efforts and look forward to your contributions.
+Thank you for your interest in contributing to @sprungg/code-mapper! We appreciate your efforts and look forward to your contributions.

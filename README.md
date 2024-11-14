@@ -1,12 +1,8 @@
-# sprungg-code-mapper
-
-![npm](https://img.shields.io/npm/v/sprungg-code-mapper)
-![License](https://img.shields.io/npm/l/sprungg-code-mapper)
-![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/sprungg-code-mapper/ci.yml)
+# @sprungg/code-mapper
 
 ## Description
 
-`sprungg-code-mapper` is a JavaScript/TypeScript project structure analyzer that helps you visualize and understand the structure of your codebase. It analyzes file structures and Abstract Syntax Trees (ASTs) to provide insights into your project's architecture.
+`@sprungg/code-mapper` is a JavaScript/TypeScript project structure analyzer that helps you visualize and understand the structure of your codebase. It analyzes file structures and Abstract Syntax Trees (ASTs) to provide insights into your project's architecture.
 
 ## Features
 
@@ -17,24 +13,16 @@
 
 ## Installation
 
-npm install sprungg-code-mapper
+npm install @sprungg/code-mapper
 
 ## Usage
-
-### CLI
-
-You can use `sprungg-code-mapper` directly from the command line:
-
-```bash
-npx sprungg-code-mapper <project-path>
-```
 
 ### Programmatic API
 
 You can also use it programmatically in your Node.js applications:
 
 ```typescript
-import { mapProject, logStats } from 'sprungg-code-mapper';
+import { mapProject, logStats } from '@sprungg/code-mapper';
 
 async function analyzeProject() {
   const projectPath = './path/to/your/project';
@@ -47,31 +35,9 @@ analyzeProject();
 
 ## Output Example
 
-When you run `sprungg-code-mapper`, it generates a structured output of your project. Here's an example of what the output might look like:
+When you run `@sprungg/code-mapper`, it generates a structured output of your project. Here's an example of what the output might look like:
 
-```
-=== Project Structure Analysis ===
-
-📁 Files and Folders:
-📂 src
-📄 src/index.ts
-📂 src/analyzers
-📄 src/analyzers/fileAnalyzer.ts
-📄 src/analyzers/astAnalyzer.ts
-
-🔗 Dependencies:
-src/index.ts → src/analyzers/fileAnalyzer.ts
-src/index.ts → src/analyzers/astAnalyzer.ts
-
-📊 Statistics:
-Total Files: 3
-Total Folders: 2
-Total Import Dependencies: 2
-```
-
-## ProjectGraph JSON Format Example
-
-The `projectGraph` object returned by the API is structured as follows:
+The `projectGraph` object returned by `mapProject` is structured as follows:
 
 ```json
 {
@@ -103,9 +69,27 @@ The `projectGraph` object returned by the API is structured as follows:
 }
 ```
 
-## Configuration
+`logStat` formats the output to a more readable format:
 
-The tool can be configured using a `tsconfig.json` file in your project root. It respects the `include` and `exclude` options to determine which files to analyze.
+```
+=== Project Structure Analysis ===
+
+📁 Files and Folders:
+📂 src
+📄 src/index.ts
+📂 src/analyzers
+📄 src/analyzers/fileAnalyzer.ts
+📄 src/analyzers/astAnalyzer.ts
+
+🔗 Dependencies:
+src/index.ts → src/analyzers/fileAnalyzer.ts
+src/index.ts → src/analyzers/astAnalyzer.ts
+
+📊 Statistics:
+Total Files: 3
+Total Folders: 2
+Total Import Dependencies: 2
+```
 
 ## Contributing
 
@@ -117,4 +101,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For any questions or feedback, please open an issue on [GitHub](https://github.com/yourusername/sprungg-code-mapper/issues).
+For any questions or feedback, please open an issue on [GitHub](https://github.com/sprungg/code-mapper/issues).
