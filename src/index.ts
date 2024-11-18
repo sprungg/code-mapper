@@ -9,7 +9,7 @@ export async function mapProject(projectPath: string): Promise<ProjectGraph> {
   const projectGraph = await fileAnalyzer.analyze();
 
   // Then analyze the AST of each file
-  const astAnalyzer = new ASTAnalyzer(projectGraph);
+  const astAnalyzer = new ASTAnalyzer(projectGraph, projectPath);
   const { nodes } = projectGraph.toJSON();
 
   for (const node of nodes) {

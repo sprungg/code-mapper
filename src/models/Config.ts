@@ -3,4 +3,5 @@ export interface AnalyzerConfig {
   include: string[];
   parsable: string[];
   baseUrl?: string;
+  paths?: Record<string, string[]>;
 }

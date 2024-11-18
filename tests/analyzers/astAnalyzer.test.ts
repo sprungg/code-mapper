@@ -9,7 +9,7 @@ describe('ASTAnalyzer', () => {
 
   beforeEach(() => {
     projectGraph = new ProjectGraph();
-    analyzer = new ASTAnalyzer(projectGraph);
+    analyzer = new ASTAnalyzer(projectGraph, __dirname);
   });
 
   it('should detect import relationships', async () => {
