@@ -134,6 +134,16 @@ export class ASTAnalyzer {
 
   private resolveImportPath(currentFile: string, importPath: string): string | null {
     const resolvePathWithExtension = (pathToResolve: string): string | null => {
+      // Handle Node16 module resolution where .js extensions are used for TypeScript files
+      if (pathToResolve.endsWith('.js')) {
+        // Try the TypeScript equivalent first
+        const tsPath = pathToResolve.replace(/\.js$/, '.ts');
+        const tsxPath = pathToResolve.replace(/\.js$/, '.tsx');
+        
+        if (fs.existsSync(tsPath)) return tsPath;
+        if (fs.existsSync(tsxPath)) return tsxPath;
+      }
+
       // If the import already has an extension, try it directly
       if (this.extensions.some((ext) => pathToResolve.endsWith(ext))) {
         return fs.existsSync(pathToResolve) ? pathToResolve : null;
@@ -149,7 +159,9 @@ export class ASTAnalyzer {
 
       // Check for index files in directories
       if (fs.existsSync(pathToResolve) && fs.statSync(pathToResolve).isDirectory()) {
-        for (const ext of this.extensions) {
+        // Try TypeScript extensions first, then JavaScript
+        const indexExtensions = ['.ts', '.tsx', '.js', '.jsx'];
+        for (const ext of indexExtensions) {
           const indexPath = path.join(pathToResolve, `index${ext}`);
           if (fs.existsSync(indexPath)) {
             return indexPath;
