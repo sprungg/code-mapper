@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { ProjectGraph } from '../models/ProjectGraph';
 import { Relationship, RelationType } from '../models/Relationship';
 import * as path from 'path';
+import { loadConfig } from '../utils/configLoader';
 
 export class ASTAnalyzer {
   private extensions = ['.js', '.jsx', '.ts', '.tsx', '.vue', '.svelte', '.mjs', '.cjs'];
@@ -95,33 +96,64 @@ export class ASTAnalyzer {
   }
 
   private resolveImportPath(currentFile: string, importPath: string): string | null {
+    const resolvePathWithExtension = (pathToResolve: string) => {
+      // If the import already has an extension, try it directly
+      if (this.extensions.some((ext) => pathToResolve.endsWith(ext))) {
+        return fs.existsSync(pathToResolve) ? pathToResolve : null;
+      }
+
+      // Try with different extensions
+      for (const ext of this.extensions) {
+        const pathWithExt = pathToResolve + ext;
+        if (fs.existsSync(pathWithExt)) {
+          return pathWithExt;
+        }
+      }
+
+      // Check for index files in directories
+      if (fs.existsSync(pathToResolve) && fs.statSync(pathToResolve).isDirectory()) {
+        for (const ext of this.extensions) {
+          const indexPath = path.join(pathToResolve, `index${ext}`);
+          if (fs.existsSync(indexPath)) {
+            return indexPath;
+          }
+        }
+      }
+      return null;
+    };
     try {
+      const config = loadConfig(this.rootPath);
+      const baseUrl = config.baseUrl;
+      const paths = config.paths || {};
+
+      // Handle path aliases
+      for (const alias in paths) {
+        const aliasPattern = alias.replace('/*', '');
+        if (importPath.startsWith(aliasPattern)) {
+          const aliasPaths = paths[alias];
+          for (const aliasPath of aliasPaths) {
+            const resolvedAliasPath = path.join(
+              baseUrl || '',
+              aliasPath.replace('/*', ''),
+              importPath.replace(aliasPattern, '')
+            );
+            const resolvedPath = resolvePathWithExtension(
+              path.resolve(this.rootPath, './' + resolvedAliasPath)
+            );
+            if (resolvedPath && fs.existsSync(resolvedPath)) {
+              return resolvedPath;
+            }
+          }
+        }
+      }
       // Handle relative imports
       if (importPath.startsWith('.')) {
         const dirName = path.dirname(currentFile);
         const resolvedPath = path.resolve(dirName, importPath);
 
-        // If the import already has an extension, try it directly
-        if (this.extensions.some((ext) => importPath.endsWith(ext))) {
-          return fs.existsSync(resolvedPath) ? resolvedPath : null;
-        }
-
-        // Try with different extensions
-        for (const ext of this.extensions) {
-          const pathWithExt = resolvedPath + ext;
-          if (fs.existsSync(pathWithExt)) {
-            return pathWithExt;
-          }
-        }
-
-        // Check for index files in directories
-        if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory()) {
-          for (const ext of this.extensions) {
-            const indexPath = path.join(resolvedPath, `index${ext}`);
-            if (fs.existsSync(indexPath)) {
-              return indexPath;
-            }
-          }
+        const resolvedPathWithExtension = resolvePathWithExtension(resolvedPath);
+        if (resolvedPathWithExtension) {
+          return resolvedPathWithExtension;
         }
       }
       return null;
