@@ -2,13 +2,13 @@ import { FileAnalyzer } from './analyzers/fileAnalyzer';
 import { ASTAnalyzer } from './analyzers/astAnalyzer';
 import { ProjectGraph } from './models/ProjectGraph';
 import { visualizeGraph } from './utils/visualizer';
+import * as path from 'path';
 
 export async function mapProject(projectPath: string): Promise<ProjectGraph> {
-  // Analyze the file structure
-  const fileAnalyzer = new FileAnalyzer(projectPath);
-  const projectGraph = await fileAnalyzer.analyze();
+  const projectGraph = new ProjectGraph(projectPath);
+  const fileAnalyzer = new FileAnalyzer(projectPath, projectGraph);
+  await fileAnalyzer.analyze();
 
-  // Then analyze the AST of each file
   const astAnalyzer = new ASTAnalyzer(projectGraph, projectPath);
   const { nodes } = projectGraph.toJSON();
 
@@ -18,7 +18,7 @@ export async function mapProject(projectPath: string): Promise<ProjectGraph> {
       node.path &&
       fileAnalyzer.getConfig().parsable.includes(node.metadata?.extension)
     ) {
-      await astAnalyzer.analyzeFile(node.path);
+      await astAnalyzer.analyzeFile(path.join(projectPath, node.path));
     }
   }
 

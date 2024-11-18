@@ -6,11 +6,12 @@ import { loadConfig } from '../utils/configLoader';
 import { AnalyzerConfig } from '../models/Config';
 
 export class FileAnalyzer {
-  private projectGraph: ProjectGraph;
   private config: AnalyzerConfig;
 
-  constructor(private rootPath: string) {
-    this.projectGraph = new ProjectGraph();
+  constructor(
+    private rootPath: string,
+    private projectGraph: ProjectGraph
+  ) {
     this.rootPath = path.resolve(rootPath);
     this.config = loadConfig(this.rootPath);
   }
