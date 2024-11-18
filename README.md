@@ -91,6 +91,31 @@ Total Folders: 2
 Total Import Dependencies: 2
 ```
 
+### CLI Usage
+
+You can use code-mapper directly from the command line:
+
+```bash
+npx @sprungg/code-mapper [project-path] [format] [output-file]
+```
+
+Options:
+- project-path: Path to your project (default: current directory)
+- format: Output format - 'json' or 'text' (default: text)
+- output-file: Optional file path to save the output
+
+Examples:
+```bash
+# Analyze current directory and display text output
+npx @sprungg/code-mapper .
+
+# Analyze specific directory and save JSON output
+npx @sprungg/code-mapper ./my-project json output.json
+
+# Analyze and save text output
+npx @sprungg/code-mapper . text output.txt
+```
+
 ## Contributing
 
 Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
