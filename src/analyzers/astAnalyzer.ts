@@ -17,14 +17,10 @@ export class ASTAnalyzer {
   async analyzeFile(filePath: string): Promise<void> {
     try {
       let content = await fs.promises.readFile(filePath, 'utf-8');
-      
       // Brittle Preprocess: Convert <const> syntax to 'as const'
       // TODO: This is brittle and should be removed when we have a better way to handle this
       if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) {
-        content = content.replace(
-          /export\s+const\s+(\w+)\s*=\s*<const>/g,
-          'export const $1 ='
-        );
+        content = content.replace(/export\s+const\s+(\w+)\s*=\s*<const>/g, 'export const $1 =');
         content = content.replace(/<const>(\[.*?\])/g, '$1 as const');
       }
 
@@ -99,7 +95,6 @@ export class ASTAnalyzer {
     // Find common parent directory
     const minLength = Math.min(filePathParts.length, resolvedPathParts.length);
     let commonIndex = 0;
-    
     while (
       commonIndex < minLength &&
       filePathParts[commonIndex] === resolvedPathParts[commonIndex]

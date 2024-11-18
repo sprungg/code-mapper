@@ -16,9 +16,7 @@ export class ProjectGraph {
   private normalizePath(fullPath: string): string {
     if (!fullPath) return fullPath;
     // Ensure the path is absolute before normalizing
-    const absolutePath = path.isAbsolute(fullPath) 
-      ? fullPath 
-      : path.join(this.rootPath, fullPath);
+    const absolutePath = path.isAbsolute(fullPath) ? fullPath : path.join(this.rootPath, fullPath);
     return path.relative(this.rootPath, absolutePath);
   }
 
@@ -27,7 +25,7 @@ export class ProjectGraph {
       ...node,
       id: this.normalizePath(node.id),
       path: node.path ? this.normalizePath(node.path) : undefined,
-      parentId: node.parentId ? this.normalizePath(node.parentId) : undefined
+      parentId: node.parentId ? this.normalizePath(node.parentId) : undefined,
     };
     this.nodes.set(normalizedNode.id, normalizedNode);
   }
@@ -38,7 +36,9 @@ export class ProjectGraph {
       id: `${this.normalizePath(relationship.sourceId)}-${relationship.type}-${this.normalizePath(relationship.targetId)}`,
       sourceId: this.normalizePath(relationship.sourceId),
       targetId: this.normalizePath(relationship.targetId),
-      commonParentId: relationship.commonParentId ? this.normalizePath(relationship.commonParentId) : undefined
+      commonParentId: relationship.commonParentId
+        ? this.normalizePath(relationship.commonParentId)
+        : undefined,
     };
     this.relationships.set(normalizedRelationship.id, normalizedRelationship);
   }

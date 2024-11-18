@@ -8,7 +8,7 @@ describe('ASTAnalyzer', () => {
   let analyzer: ASTAnalyzer;
 
   beforeEach(() => {
-    projectGraph = new ProjectGraph();
+    projectGraph = new ProjectGraph(__dirname);
     analyzer = new ASTAnalyzer(projectGraph, __dirname);
   });
 
@@ -22,7 +22,7 @@ describe('ASTAnalyzer', () => {
     expect(importRelationships).toHaveLength(1);
     expect(importRelationships[0]).toMatchObject({
       type: RelationType.IMPORTS,
-      sourceId: filePath
+      sourceId: path.relative(__dirname, filePath)
     });
   });
 

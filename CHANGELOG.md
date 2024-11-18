@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2024-11-18
+
+### Added
+- Path normalization to reduce outpu size
+- Typescript const parsing bug fix
+- Support Node16 import system
+
 ## [1.1.0] - 2024-11-18
 
 ### Added
