@@ -8,14 +8,17 @@ import * as path from 'path';
 export class ASTAnalyzer {
   private extensions = ['.js', '.jsx', '.ts', '.tsx', '.vue', '.svelte', '.mjs', '.cjs'];
 
-  constructor(private projectGraph: ProjectGraph) {}
+  constructor(
+    private projectGraph: ProjectGraph,
+    private rootPath: string
+  ) {}
 
   async analyzeFile(filePath: string): Promise<void> {
     // Parse imports
     try {
       const content = await fs.promises.readFile(filePath, 'utf-8');
       const ast = parse(content, {
-        sourceType: "unambiguous",
+        sourceType: 'unambiguous',
         plugins: this.determinePlugins(filePath) as ParserOptions['plugins'],
       });
 
@@ -31,6 +34,7 @@ export class ASTAnalyzer {
               type: RelationType.IMPORTS,
               sourceId: filePath,
               targetId: resolvedPath,
+              commonParentId: this.getCommonParentId(filePath, resolvedPath), // parentId is the last dir common to both paths
             };
             this.projectGraph.addRelationship(relationship);
           }
@@ -53,6 +57,7 @@ export class ASTAnalyzer {
                 type: RelationType.IMPORTS,
                 sourceId: filePath,
                 targetId: resolvedPath,
+                commonParentId: this.getCommonParentId(filePath, resolvedPath),
               };
               this.projectGraph.addRelationship(relationship);
             }
@@ -62,6 +67,21 @@ export class ASTAnalyzer {
     } catch (error) {
       console.warn(`Error analyzing file ${filePath}:`, error);
     }
+  }
+
+  private getCommonParentId(filePath: string, resolvedPath: string): string | undefined {
+    const filePathParts = filePath.split(path.sep);
+    const resolvedPathParts = resolvedPath.split(path.sep);
+    const minLength = Math.min(filePathParts.length, resolvedPathParts.length);
+    let commonIndex = 0;
+    while (
+      commonIndex < minLength &&
+      filePathParts[commonIndex] === resolvedPathParts[commonIndex]
+    ) {
+      commonIndex++;
+    }
+    const commonParentId = filePathParts.slice(0, commonIndex).join(path.sep);
+    return commonParentId !== this.rootPath ? commonParentId : undefined;
   }
 
   private determinePlugins(filePath: string): string[] {
