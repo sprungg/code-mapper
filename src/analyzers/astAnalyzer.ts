@@ -96,7 +96,7 @@ export class ASTAnalyzer {
   }
 
   private resolveImportPath(currentFile: string, importPath: string): string | null {
-    const resolvePathWithExtension = (pathToResolve: string) => {
+    const resolvePathWithExtension = (pathToResolve: string): string | null => {
       // If the import already has an extension, try it directly
       if (this.extensions.some((ext) => pathToResolve.endsWith(ext))) {
         return fs.existsSync(pathToResolve) ? pathToResolve : null;

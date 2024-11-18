@@ -1,6 +1,6 @@
 {
   "name": "@sprungg/code-mapper",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "JavaScript/TypeScript project structure analyzer",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -66,5 +66,11 @@
   "homepage": "https://github.com/sprungg/code-mapper#readme",
   "bin": {
     "code-mapper": "./dist/cli.js"
-  }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ]
 }

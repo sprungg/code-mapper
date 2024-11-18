@@ -25,7 +25,6 @@ export async function mapProject(projectPath: string): Promise<ProjectGraph> {
   return projectGraph;
 }
 
-export async function logStats(graph: ProjectGraph, rootPath: string) {
+export async function logStats(graph: ProjectGraph, rootPath: string): Promise<string> {
   return visualizeGraph(graph, rootPath);
 }
-

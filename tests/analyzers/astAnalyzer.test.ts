@@ -13,7 +13,7 @@ describe('ASTAnalyzer', () => {
   });
 
   it('should detect import relationships', async () => {
-    const filePath = path.join(__dirname, '/fixtures/sampleProject/test.js');
+    const filePath = path.join(__dirname, './fixtures/sampleProject/index.js');
     await analyzer.analyzeFile(filePath);
 
     const { relationships } = projectGraph.toJSON();
@@ -27,7 +27,7 @@ describe('ASTAnalyzer', () => {
   });
 
   it('should handle files with no imports gracefully', async () => {
-    const filePath = path.join(__dirname, '/fixtures/sampleProject/index.js');
+    const filePath = path.join(__dirname, './fixtures/sampleProject/src/index.js');
     await analyzer.analyzeFile(filePath);
 
     const { relationships } = projectGraph.toJSON();
