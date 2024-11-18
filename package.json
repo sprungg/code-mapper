@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/cli.js",
     "watch": "tsc -w",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -63,5 +63,8 @@
   "bugs": {
     "url": "https://github.com/sprungg/code-mapper/issues"
   },
-  "homepage": "https://github.com/sprungg/code-mapper#readme"
+  "homepage": "https://github.com/sprungg/code-mapper#readme",
+  "bin": {
+    "code-mapper": "./dist/cli.js"
+  }
 }
