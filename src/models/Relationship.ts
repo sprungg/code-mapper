@@ -8,5 +8,6 @@ export interface Relationship {
   type: RelationType;
   sourceId: string;
   targetId: string;
+  commonParentId?: string;
   metadata?: Record<string, any>;
 }

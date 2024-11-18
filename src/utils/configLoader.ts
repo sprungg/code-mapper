@@ -2,14 +2,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { AnalyzerConfig } from '../models/Config';
 import { parse as parseGitignore } from 'parse-gitignore';
+import { parse as parseJsonc } from 'jsonc-parser';
 
 export function loadConfig(rootPath: string): AnalyzerConfig {
   const config: AnalyzerConfig = {
     ignore: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/coverage/**', '**/.git/**'],
     include: ['**/*'],
     parsable: ['.js', '.jsx', '.ts', '.tsx'],
+    paths: {},
   };
-  // return config;
 
   // Read .gitignore
   try {
@@ -27,10 +28,16 @@ export function loadConfig(rootPath: string): AnalyzerConfig {
   try {
     const tsconfigPath = path.join(rootPath, 'tsconfig.json');
     if (fs.existsSync(tsconfigPath)) {
-      const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, 'utf-8'));
+      const tsconfigContent = fs.readFileSync(tsconfigPath, 'utf-8');
+      const tsconfig = parseJsonc(tsconfigContent);
       if (tsconfig.compilerOptions) {
-        const { baseUrl } = tsconfig.compilerOptions;
+        const { baseUrl, paths } = tsconfig.compilerOptions;
         config.baseUrl = baseUrl;
+
+        // Add paths from tsconfig
+        if (paths) {
+          config.paths = paths;
+        }
 
         // Add includes from tsconfig
         if (tsconfig.include) {
