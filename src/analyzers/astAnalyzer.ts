@@ -15,12 +15,30 @@ export class ASTAnalyzer {
   ) {}
 
   async analyzeFile(filePath: string): Promise<void> {
-    // Parse imports
     try {
-      const content = await fs.promises.readFile(filePath, 'utf-8');
+      let content = await fs.promises.readFile(filePath, 'utf-8');
+      
+      // Brittle Preprocess: Convert <const> syntax to 'as const'
+      // TODO: This is brittle and should be removed when we have a better way to handle this
+      if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) {
+        content = content.replace(
+          /export\s+const\s+(\w+)\s*=\s*<const>/g,
+          'export const $1 ='
+        );
+        content = content.replace(/<const>(\[.*?\])/g, '$1 as const');
+      }
+
       const ast = parse(content, {
         sourceType: 'unambiguous',
         plugins: this.determinePlugins(filePath) as ParserOptions['plugins'],
+        tokens: true,
+        errorRecovery: true,
+        attachComment: true,
+        allowImportExportEverywhere: true,
+        allowReturnOutsideFunction: true,
+        allowSuperOutsideMethod: true,
+        allowUndeclaredExports: true,
+        createParenthesizedExpressions: true
       });
 
       traverse(ast, {
@@ -71,25 +89,44 @@ export class ASTAnalyzer {
   }
 
   private getCommonParentId(filePath: string, resolvedPath: string): string | undefined {
-    const filePathParts = filePath.split(path.sep);
-    const resolvedPathParts = resolvedPath.split(path.sep);
+    // Convert to relative paths
+    const relativeFilePath = path.relative(this.rootPath, filePath);
+    const relativeResolvedPath = path.relative(this.rootPath, resolvedPath);
+
+    const filePathParts = relativeFilePath.split(path.sep);
+    const resolvedPathParts = relativeResolvedPath.split(path.sep);
+    
+    // Find common parent directory
     const minLength = Math.min(filePathParts.length, resolvedPathParts.length);
     let commonIndex = 0;
+    
     while (
       commonIndex < minLength &&
       filePathParts[commonIndex] === resolvedPathParts[commonIndex]
     ) {
       commonIndex++;
     }
-    const commonParentId = filePathParts.slice(0, commonIndex).join(path.sep);
-    return commonParentId !== this.rootPath ? commonParentId : undefined;
+
+    if (commonIndex === 0) return undefined;
+    
+    // Join the common parts to create the common parent path
+    const commonParentPath = filePathParts.slice(0, commonIndex).join(path.sep);
+    return commonParentPath || undefined;
   }
 
-  private determinePlugins(filePath: string): string[] {
+  private determinePlugins(filePath: string): (string | [string, object])[] {
     const ext = path.extname(filePath);
-    const plugins = ['jsx'];
+    const plugins: (string | [string, object])[] = ['jsx'];
 
-    if (ext.includes('ts')) plugins.push('typescript');
+    // Add TypeScript plugin with options
+    if (ext.includes('ts')) {
+      plugins.push(['typescript', { 
+        isTSX: true,
+        allExtensions: true,
+        dts: true,
+        disallowAmbiguousJSXLike: false
+      }]);
+    }
     if (filePath.includes('vue')) plugins.push('decorators');
 
     return plugins;
@@ -97,6 +134,16 @@ export class ASTAnalyzer {
 
   private resolveImportPath(currentFile: string, importPath: string): string | null {
     const resolvePathWithExtension = (pathToResolve: string): string | null => {
+      // Handle Node16 module resolution where .js extensions are used for TypeScript files
+      if (pathToResolve.endsWith('.js')) {
+        // Try the TypeScript equivalent first
+        const tsPath = pathToResolve.replace(/\.js$/, '.ts');
+        const tsxPath = pathToResolve.replace(/\.js$/, '.tsx');
+        
+        if (fs.existsSync(tsPath)) return tsPath;
+        if (fs.existsSync(tsxPath)) return tsxPath;
+      }
+
       // If the import already has an extension, try it directly
       if (this.extensions.some((ext) => pathToResolve.endsWith(ext))) {
         return fs.existsSync(pathToResolve) ? pathToResolve : null;
@@ -112,7 +159,9 @@ export class ASTAnalyzer {
 
       // Check for index files in directories
       if (fs.existsSync(pathToResolve) && fs.statSync(pathToResolve).isDirectory()) {
-        for (const ext of this.extensions) {
+        // Try TypeScript extensions first, then JavaScript
+        const indexExtensions = ['.ts', '.tsx', '.js', '.jsx'];
+        for (const ext of indexExtensions) {
           const indexPath = path.join(pathToResolve, `index${ext}`);
           if (fs.existsSync(indexPath)) {
             return indexPath;

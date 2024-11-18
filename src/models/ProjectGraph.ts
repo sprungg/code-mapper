@@ -3,9 +3,9 @@ import { Relationship } from './Relationship';
 import * as path from 'path';
 
 export class ProjectGraph {
+  private rootPath: string;
   private nodes: Map<string, Node>;
   private relationships: Map<string, Relationship>;
-  private rootPath: string;
 
   constructor(rootPath: string) {
     this.nodes = new Map();
@@ -14,7 +14,12 @@ export class ProjectGraph {
   }
 
   private normalizePath(fullPath: string): string {
-    return path.relative(this.rootPath, fullPath);
+    if (!fullPath) return fullPath;
+    // Ensure the path is absolute before normalizing
+    const absolutePath = path.isAbsolute(fullPath) 
+      ? fullPath 
+      : path.join(this.rootPath, fullPath);
+    return path.relative(this.rootPath, absolutePath);
   }
 
   addNode(node: Node): void {

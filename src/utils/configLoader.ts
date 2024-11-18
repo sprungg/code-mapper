@@ -4,13 +4,31 @@ import { AnalyzerConfig } from '../models/Config';
 import { parse as parseGitignore } from 'parse-gitignore';
 import { parse as parseJsonc } from 'jsonc-parser';
 
-export function loadConfig(rootPath: string): AnalyzerConfig {
-  const config: AnalyzerConfig = {
+export interface ModuleConfig extends AnalyzerConfig {
+  moduleSystem: 'Node16' | 'CommonJS';
+}
+
+export function loadConfig(rootPath: string): ModuleConfig {
+  const config: ModuleConfig = {
     ignore: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/coverage/**', '**/.git/**'],
     include: ['**/*'],
     parsable: ['.js', '.jsx', '.ts', '.tsx'],
     paths: {},
+    moduleSystem: 'CommonJS',
   };
+
+  // Read package.json to determine module system
+  try {
+    const packageJsonPath = path.join(rootPath, 'package.json');
+    if (fs.existsSync(packageJsonPath)) {
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+      if (packageJson.type === 'module') {
+        config.moduleSystem = 'Node16';
+      }
+    }
+  } catch (error) {
+    console.warn('Error reading package.json:', error);
+  }
 
   // Read .gitignore
   try {
