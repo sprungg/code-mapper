@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2024-11-20
+
+### Added
+- Git plugin for analyzing repository information
+- GitHub URL links for files in GitHub repositories
+- Git commit history metadata for files and folders
+
+### Changed
+- Enhanced metadata structure to include git information
+- Improved path handling for GitHub URLs
+
 ## [1.2.0] - 2024-11-18
 
 ### Added

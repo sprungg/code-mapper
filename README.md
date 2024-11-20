@@ -116,6 +116,29 @@ npx @sprungg/code-mapper ./my-project json output.json
 npx @sprungg/code-mapper . text output.txt
 ```
 
+### CLI Usage with Git Plugin
+
+The Git plugin can be enabled with various options:
+
+```bash
+# Basic usage with git information
+npx @sprungg/code-mapper --git
+
+# Exclude commit messages from git info
+npx @sprungg/code-mapper --git-no-message
+
+# Specify number of commits to include in history
+npx @sprungg/code-mapper --git-history=5
+
+# Combined with other options
+npx @sprungg/code-mapper /path/to/project --git --format json -o output.json
+```
+
+Git plugin options:
+- `--git`: Enable git information collection
+- `--git-no-message`: Exclude commit messages from git info
+- `--git-history=N`: Include N most recent commits (default: 1)
+
 ## Contributing
 
 Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.

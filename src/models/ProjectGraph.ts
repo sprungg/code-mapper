@@ -59,4 +59,12 @@ export class ProjectGraph {
       relationships: Array.from(this.relationships.values()),
     };
   }
+
+  updateNodeMetadata(nodeId: string, metadata: Record<string, any>): void {
+    const node = this.nodes.get(nodeId);
+    if (node) {
+      node.metadata = metadata;
+      this.nodes.set(nodeId, node);
+    }
+  }
 }
