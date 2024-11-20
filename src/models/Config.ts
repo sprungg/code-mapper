@@ -4,4 +4,13 @@ export interface AnalyzerConfig {
   parsable: string[];
   baseUrl?: string;
   paths?: Record<string, string[]>;
+  plugins?: {
+    git?: boolean | GitPluginOptions;
+  };
+}
+
+export interface GitPluginOptions {
+  enabled: boolean;
+  includeCommitMessage?: boolean;
+  maxHistory?: number;
 }
