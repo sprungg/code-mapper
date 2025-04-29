@@ -104,8 +104,6 @@ export class GitAnalyzer {
       ? `git log ${historyLimit} --format="${format}" -- "${nodePath}"`
       : `git log ${historyLimit} --format="${format}" "${nodePath}"`;
 
-    console.log(command);
-
     try {
       const { stdout } = await execAsync(command, { cwd: this.rootPath });
       if (!stdout.trim()) return null;
